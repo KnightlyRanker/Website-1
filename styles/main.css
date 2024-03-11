@@ -1,0 +1,31 @@
+.roboto-light {
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  .roboto-regular {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .roboto-medium {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+  }
+  *{font-family: "roboto", sans-serif;}
+
+  header {
+    background-color: #a7b774;
+    display: flex;
+}
+
+header nav ul {
+    flex: 1;
+}
+
+header nav ul li {
+    flex: 1;
+}
