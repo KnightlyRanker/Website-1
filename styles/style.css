@@ -101,7 +101,7 @@ img {
     background: #b9dbcb;
 }
 
-.story .img-container, .wedding .img-container {
+.story .img-container, .wedding .img-container  {
     width: 45%;
     border-radius: 16px;
     padding: 16px;
