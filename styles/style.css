@@ -59,7 +59,8 @@ img {
     padding-bottom: 0;
 }
 
-.navbar li.circle-behind a::before, .navbar li.circle-behind a::after {
+.navbar li.circle-behind a::before,
+.navbar li.circle-behind a::after {
     content: "";
     position: absolute;
     top: 18px;
@@ -90,7 +91,8 @@ img {
     transform: translate(-50%, -50%) scale(1.5);
 }
 
-.story, .wedding {
+.story,
+.wedding {
     width: 100%;
     justify-content: space-evenly;
     margin: auto;
@@ -101,7 +103,8 @@ img {
     background: #b9dbcb;
 }
 
-.story .img-container, .wedding .img-container  {
+.story .img-container,
+.wedding .img-container {
     width: 45%;
     border-radius: 16px;
     padding: 16px;
@@ -112,15 +115,18 @@ img {
     box-shadow: -12.5px -12.5px 25px #182f2440, 5px 5px 15px #182f241a, inset 2.5px 2.5px 7.5px #182f2480;
 }
 
-.story .img-container img, .wedding .img-container img {
+.story .img-container img,
+.wedding .img-container img {
     border-radius: 8px;
 }
 
-.story .text-container, .wedding .text-container {
+.story .text-container,
+.wedding .text-container {
     width: 45%;
 }
 
-.story .text-container p, .wedding .text-container p {
+.story .text-container p,
+.wedding .text-container p {
     width: 100%;
     text-align: justify;
     margin: 2.5% 0;

@@ -23,9 +23,9 @@ function initRemainingTime(id, endTime) {
 
         if (t.total <= 0) {
             clearInterval(timeInterval);
-            daysSpan.innerHTML = '00';
+            daysSpan.innerHTML = '000';
             hoursSpan.innerHTML = '00';
-            minutesSpan.innerHTML = '00';
+            minutesSpan.uinnerHTML = '00';
             secondsSpan.innerHTML = '00';
         }
     }
