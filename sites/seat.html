@@ -5,50 +5,99 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wedding Seat Selector</title>
 <link rel="stylesheet" href="styles/seat.css">
-<style>
-    .table-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-    .seat {
-        width: 100px;
-        height: 100px;
-        background-color: #f0f0f0;
-        border: 1px solid #ccc;
-        margin: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-    }
-    .seat.selected {
-        background-color: #f00;
-        color: #fff;
-    }
-</style>
 </head>
 <body>
 <div class="table-container">
-    <div class="seat" id="seat1" onclick="selectSeat('seat1')">Seat 1</div>
-    <div class="seat" id="seat2" onclick="selectSeat('seat2')">Seat 2</div>
-    <div class="seat" id="seat3" onclick="selectSeat('seat3')">Seat 3</div>
-    <div class="seat" id="seat4" onclick="selectSeat('seat4')">Seat 4</div>
-    <div class="seat" id="seat5" onclick="selectSeat('seat5')">Seat 5</div>
-    <div class="seat" id="seat6" onclick="selectSeat('seat6')">Seat 6</div>
-    <!-- Add more seats as needed -->
+    <canvas id="seats"></canvas>
 </div>
 <script>
-    
-    function selectSeat(seatId) {
-    const userName = prompt("Please enter your name");
-    if (userName) {
-        const seat = document.getElementById(seatId);
-        seat.textContent = `${userName} (${seatId})`;
-        seat.style.backgroundColor = "#b9dbcb"; // Change color to indicate selection
+const canvas = document.getElementById("seats");
+const ctx = canvas.getContext("2d");
+
+const seatSize = Math.min(window.innerWidth / 15, 50); // Adjust seat size to fit screen width
+const seatGap = 1.25;
+
+const seatRows = 4;
+const seatColumns = 8; // 4 seats on each side of the aisle
+const busLength = (seatRows * seatSize * seatGap) + (seatSize * 2) - seatSize * (seatGap - 1);
+const busWidth = (seatColumns * seatSize) + (seatSize * 2); // Additional spacing for aisle
+
+canvas.width = busWidth + 20;
+canvas.height = busLength + 20;
+
+const seats = new Array(seatRows * seatColumns).fill(null);
+
+function roundRect(x, y, width, height, radius, fill = false) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    if (fill) {
+        ctx.fill();
+    } else {
+        ctx.stroke();
     }
 }
+
+function drawSeats() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let seatNumber = 1;
+    for (let row = 0; row < seatRows; row++) {
+        for (let col = 0; col < seatColumns; col++) {
+            // Adding a gap for the aisle between the 4th and 5th seat
+            const x = col * seatSize + 10 + (col >= 4 ? seatSize * 2 : 0); // Creating an aisle space
+            const y = row * seatSize * seatGap + seatSize * 2 + 10;
+
+            ctx.strokeStyle = "gray";
+            ctx.lineWidth = 2;
+            roundRect(x, y, seatSize, seatSize, 5);
+
+            const index = row * seatColumns + col;
+            if (seats[index]) {
+                ctx.fillStyle = "#b9dbcb";
+                roundRect(x, y, seatSize, seatSize, 5, true);
+                ctx.fillStyle = "black";
+                ctx.font = `${seatSize / 4}px Arial`;
+                ctx.fillText(seats[index], x + seatSize / 2, y + seatSize / 2, seatSize);
+            } else {
+                ctx.fillStyle = "grey";
+                ctx.font = `${seatSize / 4}px Arial`;
+                ctx.fillText(seatNumber, x + seatSize / 2, y + seatSize / 2, seatSize);
+            }
+            seatNumber++;
+        }
+    }
+}
+
+canvas.addEventListener('click', function(event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    selectSeat(x, y);
+});
+
+function selectSeat(x, y) {
+    const row = Math.floor((y - 10 - seatSize * 2) / (seatSize * seatGap));
+    const col = Math.floor((x - 10) / seatSize);
+    if (col >= 4) col -= 1; // Adjust for the aisle gap
+    const index = row * seatColumns + col;
+    if (row >= 0 && row < seatRows && col >= 0 && col < seatColumns && col != 4) { // Skip interaction for the aisle gap
+        const userName = prompt("Please enter your name");
+        if (userName) {
+            seats[index] = userName; // Save the user's name to the selected seat
+            drawSeats(); // Redraw the seats to update the canvas
+        }
+    }
+}
+
+drawSeats(); // Initial draw of the seats
 </script>
 </body>
 </html>
