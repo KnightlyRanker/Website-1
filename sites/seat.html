@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Seat Selector</title>
+<link rel="stylesheet" href="styles/seat.css">
+<style>
+    .table-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    .seat {
+        width: 100px;
+        height: 100px;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        margin: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+    .seat.selected {
+        background-color: #f00;
+        color: #fff;
+    }
+</style>
+</head>
+<body>
+<div class="table-container">
+    <div class="seat" id="seat1" onclick="selectSeat('seat1')">Seat 1</div>
+    <div class="seat" id="seat2" onclick="selectSeat('seat2')">Seat 2</div>
+    <div class="seat" id="seat3" onclick="selectSeat('seat3')">Seat 3</div>
+    <div class="seat" id="seat4" onclick="selectSeat('seat4')">Seat 4</div>
+    <div class="seat" id="seat5" onclick="selectSeat('seat5')">Seat 5</div>
+    <div class="seat" id="seat6" onclick="selectSeat('seat6')">Seat 6</div>
+    <!-- Add more seats as needed -->
+</div>
+<script>
+    
+    function selectSeat(seatId) {
+    const userName = prompt("Please enter your name");
+    if (userName) {
+        const seat = document.getElementById(seatId);
+        seat.textContent = `${userName} (${seatId})`;
+        seat.style.backgroundColor = "#b9dbcb"; // Change color to indicate selection
+    }
+}
+</script>
+</body>
+</html>
