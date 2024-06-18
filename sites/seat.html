@@ -4,100 +4,203 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wedding Seat Selector</title>
-<link rel="stylesheet" href="styles/seat.css">
+<link rel="stylesheet" href="styles/style.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+<style>
+/* Additional CSS for seat.html */
+body, html, #app {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#app {
+    overflow: hidden;
+    touch-action: pan-up;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    text-shadow: 0 0 5px #ffffff, 0 0 20px #000, 0 0 30px #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#app h1  {
+    font-size: 40px;
+    text-transform: uppercase;
+}
+
+#app a {
+    text-decoration: none;
+    color: #fff;
+}
+
+#app canvas#webgl-canvas {
+    display: block;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+canvas#seats {
+    border: 2px solid #ffffff;
+    margin-top: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2 {
+    text-decoration: none;
+    color: #fff;
+    overflow: hidden;
+    touch-action: pan-up;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #000, 0 0 30px #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+</style>
 </head>
 <body>
-<div class="table-container">
-    <canvas id="seats"></canvas>
+<div id="app">
+    <canvas id="webgl-canvas"></canvas>
+    <div id="hero">
+        <h1>Choose Your Seat for the Wedding of Dominick and Aleena</h1>
+    </div>
 </div>
-<script>
-const canvas = document.getElementById("seats");
-const ctx = canvas.getContext("2d");
+    <header class="container header">
+        <h2>Choose your Seat (Login for saving)</h2>
+    </header>
+    <div class="container table-container">
+        <canvas id="seats"></canvas>
+    </div>
+    <script type="module">
+        import { Bokeh1Background } from 'https://cdn.jsdelivr.net/npm/threejs-components@0.0.2/build/backgrounds/bokeh1.cdn.min.js';
 
-const seatSize = Math.min(window.innerWidth / 15, 50); // Adjust seat size to fit screen width
-const seatGap = 1.25;
+        const DomeAleenaBG = Bokeh1Background(document.getElementById('webgl-canvas'));
+        DomeAleenaBG.loadMap('https://cdn.jsdelivr.net/npm/threejs-components@0.0.2/build/assets/bokeh-particles2.png');
+        DomeAleenaBG.setColors([0x6d4862, 0xfd826c, 0x22ccc1]);
 
-const seatRows = 4;
-const seatColumns = 8; // 4 seats on each side of the aisle
-const busLength = (seatRows * seatSize * seatGap) + (seatSize * 2) - seatSize * (seatGap - 1);
-const busWidth = (seatColumns * seatSize) + (seatSize * 2); // Additional spacing for aisle
+        document.body.addEventListener('click', () => {
+            DomeAleenaBG.setColors([0xffffff * Math.random(), 0xffffff * Math.random(), 0xffffff * Math.random()]);
+        });
 
-canvas.width = busWidth + 20;
-canvas.height = busLength + 20;
+        const canvas = document.getElementById("seats");
+        const ctx = canvas.getContext("2d");
 
-const seats = new Array(seatRows * seatColumns).fill(null);
+        const seatSize = Math.min(window.innerWidth / 15, 50); // Adjust seat size to fit screen width
+        const seatGap = 1.25;
 
-function roundRect(x, y, width, height, radius, fill = false) {
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-    if (fill) {
-        ctx.fill();
-    } else {
-        ctx.stroke();
-    }
-}
+        const seatRows = 4;
+        const seatColumns = 8; // 4 seats on each side of the aisle
+        const busLength = (seatRows * seatSize * seatGap) + (seatSize * 2) - seatSize * (seatGap - 1);
+        const busWidth = (seatColumns * seatSize) + (seatSize * 2); // Additional spacing for aisle
 
-function drawSeats() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let seatNumber = 1;
-    for (let row = 0; row < seatRows; row++) {
-        for (let col = 0; col < seatColumns; col++) {
-            // Adding a gap for the aisle between the 4th and 5th seat
-            const x = col * seatSize + 10 + (col >= 4 ? seatSize * 2 : 0); // Creating an aisle space
-            const y = row * seatSize * seatGap + seatSize * 2 + 10;
+        canvas.width = busWidth + 20;
+        canvas.height = busLength + 20;
 
-            ctx.strokeStyle = "gray";
-            ctx.lineWidth = 2;
-            roundRect(x, y, seatSize, seatSize, 5);
+        const seats = new Array(seatRows * seatColumns).fill(null);
 
-            const index = row * seatColumns + col;
-            if (seats[index]) {
-                ctx.fillStyle = "#b9dbcb";
-                roundRect(x, y, seatSize, seatSize, 5, true);
-                ctx.fillStyle = "black";
-                ctx.font = `${seatSize / 4}px Arial`;
-                ctx.fillText(seats[index], x + seatSize / 2, y + seatSize / 2, seatSize);
+        function roundRect(x, y, width, height, radius, fill = false) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            if (fill) {
+                ctx.fill();
             } else {
-                ctx.fillStyle = "grey";
-                ctx.font = `${seatSize / 4}px Arial`;
-                ctx.fillText(seatNumber, x + seatSize / 2, y + seatSize / 2, seatSize);
+                ctx.stroke();
             }
-            seatNumber++;
         }
-    }
-}
 
-canvas.addEventListener('click', function(event) {
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    selectSeat(x, y);
-});
+        function drawSeats() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let seatNumber = 1;
+            for (let row = 0; row < seatRows; row++) {
+                for (let col = 0; col < seatColumns; col++) {
+                    // Adding a gap for the aisle between the 4th and 5th seat
+                    const x = col * seatSize + 10 + (col >= 4 ? seatSize * 2 : 0); // Creating an aisle space
+                    const y = row * seatSize * seatGap + seatSize * 2 + 10;
 
-function selectSeat(x, y) {
-    const row = Math.floor((y - 10 - seatSize * 2) / (seatSize * seatGap));
-    const col = Math.floor((x - 10) / seatSize);
-    if (col >= 4) col -= 1; // Adjust for the aisle gap
-    const index = row * seatColumns + col;
-    if (row >= 0 && row < seatRows && col >= 0 && col < seatColumns && col != 4) { // Skip interaction for the aisle gap
-        const userName = prompt("Please enter your name");
-        if (userName) {
-            seats[index] = userName; // Save the user's name to the selected seat
-            drawSeats(); // Redraw the seats to update the canvas
+                    ctx.strokeStyle = "gray";
+                    ctx.lineWidth = 2;
+                    roundRect(x, y, seatSize, seatSize, 5);
+
+                    const index = row * seatColumns + col;
+                    if (seats[index]) {
+                        ctx.fillStyle = "#b9dbcb";
+                        roundRect(x, y, seatSize, seatSize, 5, true);
+                        ctx.fillStyle = "black";
+                        ctx.font = `${seatSize / 4}px Arial`;
+                        ctx.fillText(seats[index], x + seatSize / 2, y + seatSize / 2, seatSize);
+                    } else {
+                        ctx.fillStyle = "grey";
+                        ctx.font = `${seatSize / 4}px Arial`;
+                        ctx.fillText(seatNumber, x + seatSize / 2, y + seatSize / 2, seatSize);
+                    }
+                    seatNumber++;
+                }
+            }
         }
-    }
-}
 
-drawSeats(); // Initial draw of the seats
-</script>
+        canvas.addEventListener('click', function(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            selectSeat(x, y);
+        });
+
+        function selectSeat(x, y) {
+            const row = Math.floor((y - 10 - seatSize * 2) / (seatSize * seatGap));
+            const col = Math.floor((x - 10) / seatSize);
+            if (col >= 4) col -= 1; // Adjust for the aisle gap
+            const index = row * seatColumns + col;
+            if (row >= 0 && row < seatRows && col >= 0 && col < seatColumns && col != 4) { // Skip interaction for the aisle gap
+                const userName = prompt("Please enter your name");
+                if (userName) {
+                    seats[index] = userName; // Save the user's name to the selected seat
+                    drawSeats(); // Redraw the seats to update the canvas
+
+                    // Send reservation data to the server
+                    fetch('/path/to/reserve_seat.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `seat_number=${index + 1}&reserved_by=${userName}`
+                    })
+                    .then(response => response.text())
+                    .then(data => console.log(data))
+                    .catch(error => console.error('Error:', error));
+                }
+            }
+        }
+
+        drawSeats(); // Initial draw of the seats
+    </script>
 </body>
 </html>
