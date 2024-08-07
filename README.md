@@ -22,7 +22,7 @@ A web application for managing marriage event registrations, including seat rese
 - **register.php**: User registration script
 - **reserve_Seat.php**: Seat reservation script
 
-##🛠️ Usage
+## 🛠️ Usage
 Registering and Logging In
 
 - Register: Click on the Register link and fill out the form with your details.
